@@ -1,21 +1,39 @@
 import { createTransport } from "nodemailer";
+import hbs from "nodemailer-express-handlebars";
+import path from "path";
 
 
+const hbsConfig = {
+    viewEngine: {
+        extName: ".handlebars",
+        partialsDir: path.resolve("./src/views"),
+        defaultLayout: false
+    },
+    viewPath: path.resolve("src/views"),
+    extName: ".handlebars",
+}
 
 export const transporter = createTransport({
 
-    host: 'smtp.ethereal.email',
-    port: 587,
+    service: "gmail",
+    port: 465,
     auth: {
-        user: 'maudie.tromp@ethereal.email',
-        pass: 'vaq2nfFUANwg5phdmr'
+        user: process.env.NODEMAILER_USER,
+        pass: process.env.NODEMAILER_PASSWORD
     }
 
 });
 
-export const configMail = {
-    from: 'maudie.tromp@ethereal.email',
-    to: "maudie.tromp@ethereal.email",
-    subject: "prueba",
-    text: "pruebatext"
-}
+transporter.use("compile", hbs(hbsConfig));
+
+
+export const resetPasswordEmail = (destinationMail, linkToken) => ({
+    from: process.env.NODEMAILER_USER,
+    to: destinationMail,
+    subject: `restablecer su contraseña`,
+    template: "resetPassword",
+    context: {
+        tokenlink: "linkToken"
+    }
+})
+

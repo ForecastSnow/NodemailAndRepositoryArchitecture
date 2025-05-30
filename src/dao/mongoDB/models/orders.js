@@ -6,7 +6,7 @@ const orderSchema = new Schema({
     code: { type: String, default: orderCodeGenerator },
     purchase_datetime: { type: Number, default: Date.now },
     amount: Number,
-    purchaser: String,
+    purchaser: { type: Schema.Types.ObjectId, required: true, ref: "User" },
     bought: []
 })
 

@@ -15,7 +15,7 @@ export const checkAuthTokenHeaders = (req, res, next) => {
 
         req.user = decodedToken;
 
-        next()
+        /* next() */
     } catch (error) {
         if (error instanceof jwt.JsonWebTokenError) next(new CustomError("Error en el token", 401));
         next(error)

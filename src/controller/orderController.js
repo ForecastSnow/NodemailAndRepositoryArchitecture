@@ -33,7 +33,9 @@ class OrderController {
 
 
         try {
+            const idUser = req.user._id;
             const data = req.body;
+            data.purchaser = idUser;
             const response = await this.orderService.create(data);
             res.status(200).json(response)
         } catch (error) {
@@ -64,6 +66,29 @@ class OrderController {
         } catch (error) {
             next(error);
         }
+    }
+
+    async getAllbyUser(id) {
+        try {
+            const idUser = req.user._id
+            const response = await this.orderService.getAllbyUser(idUser);
+            res.status(200).json(response);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getUserOrderById(id, idUser) {
+
+        try {
+            const id = req.params.id;
+            const idUser = req.user._id
+            const response = await this.orderService.getUserOrderById(id, idUser);
+            res.status(200).json(response);
+        } catch (error) {
+            next(error);
+        }
+
     }
 
 

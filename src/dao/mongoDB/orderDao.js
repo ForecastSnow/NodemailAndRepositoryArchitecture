@@ -8,6 +8,22 @@ class OrderDao extends CRUD {
         super(orderModel)
     }
 
+    getAllByUser = async (id) => {
+        try {
+            return await this.model.find({ purchaser: id });
+        } catch (error) {
+            throw Error(error);
+        }
+    }
+
+    getUserOrderById = async (id, idUser) => {
+        try {
+            return await this.model.findOne({ _id: id, purchaser: idUser });
+        } catch (error) {
+            throw Error(error);
+        }
+    }
+
 
 
 }

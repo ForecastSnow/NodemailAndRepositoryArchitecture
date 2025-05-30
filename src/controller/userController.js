@@ -132,18 +132,7 @@ class UserController {
             const { email, password } = req.body;
             const user = await this.userService.login(email, password);
             const token = await this.userService.generateToken(user);
-            res.header("auth", token).json({ user, token })
-        } catch (error) {
-            next(error)
-        }
-    }
-
-    loginCookie = async (req, res, next) => {
-        try {
-            const { email, password } = req.body;
-            const user = await this.userService.login(email, password);
-            const token = await this.userService.generateToken(user);
-            res.cookie("auth", token, { httpOnly: true }).json({ user, token })
+            res.cookie("token", token, { httpOnly: true }).json({ user, token })
         } catch (error) {
             next(error)
         }

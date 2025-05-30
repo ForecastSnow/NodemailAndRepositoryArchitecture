@@ -3,27 +3,29 @@ import { passwordResetOrdersDao } from "../dao/mongoDB/passwordResetOrdersDao.js
 import jwt from "jsonwebtoken";
 
 
-class PasswordResetService extends Service {
+class PasswordResetService {
 
     constructor(passwordResetOrdersDao) {
-        super(passwordResetOrdersDao)
+        this.passwordResetOrdersDao = passwordResetOrdersDao
     }
 
     async requestResetPassword(email) {
-
 
         try {
             const userExist = await this.dao.getByEmail(email);
             if (!userExist) throw new CustomError("Email indicado no encontrado", 400);
 
+            const payload = {
+                _id: userExist._id,
+                first_name: userExist.first_name,
+                last_name: userExist.last_name,
+                email: userExist.mail,
+            }
 
-
+                
         } catch (error) {
             throw error
         }
-
-
-
 
     }
 
@@ -31,12 +33,6 @@ class PasswordResetService extends Service {
 
 
         try {
-            const payload = {
-                _id: user._id,
-                first_name: user.first_name,
-                last_name: user.last_name,
-                email: user.mail,
-            }
 
             return jwt.sign(payload, process.env.JWT_KEY, { expiresIn: "1h" });
         } catch (error) {

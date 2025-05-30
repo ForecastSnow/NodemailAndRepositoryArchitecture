@@ -14,4 +14,4 @@ treeRoutes.use(productRoute);
 treeRoutes.use(orderRoute);
 
 
-treeRoutes.use("/emailTest", sendEmail);
+treeRoutes.post("/emailTest", sendEmail);
