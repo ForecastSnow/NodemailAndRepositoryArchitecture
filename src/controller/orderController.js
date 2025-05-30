@@ -34,9 +34,7 @@ class OrderController {
 
         try {
             const idUser = req.user._id;
-            const data = req.body;
-            data.purchaser = idUser;
-            const response = await this.orderService.create(data);
+            const response = await this.orderService.create(idUser);
             res.status(200).json(response)
         } catch (error) {
             next(error);
@@ -68,7 +66,7 @@ class OrderController {
         }
     }
 
-    async getAllbyUser(id) {
+    getAllbyUser = async (req, res, next) => {
         try {
             const idUser = req.user._id
             const response = await this.orderService.getAllbyUser(idUser);
@@ -78,7 +76,7 @@ class OrderController {
         }
     }
 
-    async getUserOrderById(id, idUser) {
+    getUserOrderById = async (req, res, next) => {
 
         try {
             const id = req.params.id;

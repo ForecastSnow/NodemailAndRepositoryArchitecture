@@ -1,4 +1,5 @@
 import { orderDao } from "../dao/mongoDB/orderDao.js";
+import { CustomError } from "../util/customError.js";
 import { Service } from "./service.js";
 import { userService } from "./userService.js";
 
@@ -11,14 +12,38 @@ class OrderService extends Service {
 
 
 
-    async create(body) {
+    async create(id) {
         try {
 
-            const id = body.purchaser;
-            userService.clearCartUser(id);
+            const userCart = await userService.GetAndclearCartUser(id);
 
-            
-            return await this.dao.create(body);
+            if (!userCart?.cart?.length) {
+                throw new CustomError("El carrito esta vacio", 400);
+
+            }
+
+            let amount = 0;
+            const outStock = [];
+
+            for (let product = 0; product < userCart.cart.length; product++) {
+                if (userCart.cart[product].product.stock < userCart.cart[product].quantity) {
+                    outStock.push({ product: userCart.cart[product].product, missing: Math.abs(userCart.cart[product].product.stock - userCart.cart[product].quantity) })
+                } else {
+                    amount = amount + ((userCart.cart[product].product.price) * userCart.cart[product].quantity)
+                }
+
+            }
+
+            const data = {
+                purchaser: id,
+                bought: userCart.cart,
+                amount: amount,
+                outStock: outStock
+            }
+
+            console.log(data)
+
+            return await this.dao.create(data);
             if (!response) throw new CustomError("no se ah podido crear el elemento", 404);
         } catch (error) {
             throw error;
@@ -27,7 +52,7 @@ class OrderService extends Service {
 
     async getAllbyUser(id) {
         try {
-            return await this.dao.getAllbyUser(id);
+            return await this.dao.getAllByUser(id);
             if (!response) throw new CustomError("error al buscar en la base de datos", 500);
         } catch (error) {
             throw error;

@@ -7,7 +7,8 @@ const orderSchema = new Schema({
     purchase_datetime: { type: Number, default: Date.now },
     amount: Number,
     purchaser: { type: Schema.Types.ObjectId, required: true, ref: "User" },
-    bought: []
+    bought: [],
+    outStock: []
 })
 
 export const orderModel = mongoose.model("order", orderSchema);

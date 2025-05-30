@@ -6,9 +6,9 @@ import { ROLETYPE } from "../util/dictionary.js";
 
 export const orderRoute = express.Router();
 
-orderRoute.post("/api/user/order", passport.authenticate("jwtCookies"), checkRole(ROLETYPE.admin), orderController.create);
-orderRoute.get("/api/user/order", passport.authenticate("jwtCookies"), checkRole(ROLETYPE.user), orderController.getAllbyUser);
-orderRoute.get("/api/user/order/:id", passport.authenticate("jwtCookies"), checkRole(ROLETYPE.user), orderController.getUserOrderById);
+orderRoute.post("/api/order/user", passport.authenticate("jwtCookies"), checkRole(ROLETYPE.user), orderController.create);
+orderRoute.get("/api/order/user", passport.authenticate("jwtCookies"), checkRole(ROLETYPE.user), orderController.getAllbyUser);
+orderRoute.get("/api/order/user/:id", passport.authenticate("jwtCookies"), checkRole(ROLETYPE.user), orderController.getUserOrderById);
 
 orderRoute.post("/api/order", passport.authenticate("jwtCookies"), checkRole(ROLETYPE.admin), orderController.create);
 orderRoute.get("/api/order/:id", passport.authenticate("jwtCookies"), checkRole(ROLETYPE.admin), orderController.getById);

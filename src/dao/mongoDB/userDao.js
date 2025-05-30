@@ -77,13 +77,19 @@ class UserDao extends CRUD {
         }
     }
 
-    clearCartUser = async (id) => {
+    GetAndclearCartUser = async (id) => {
 
         try {
-            const response = await this.userModel.updateOne(
+
+            const cart = await this.userModel.findOneAndUpdate(
                 { _id: id },
-                { $set: { cart: [] } }
-            );
+                { $set: { cart: [] } },
+                { returnDocument: "before" });
+
+            const response = await this.userModel.populate(cart, {
+                path: "cart.product"
+            });
+            
             return response;
 
         } catch (error) {

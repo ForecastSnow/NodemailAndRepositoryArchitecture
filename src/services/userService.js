@@ -51,10 +51,10 @@ class UserService extends Service {
 
     }
 
-    async clearCartUser(id) {
+    async GetAndclearCartUser(id) {
 
         try {
-            return await this.dao.clearCartUser(id);
+            return await this.dao.GetAndclearCartUser(id);
         } catch (error) {
             throw error;
         }

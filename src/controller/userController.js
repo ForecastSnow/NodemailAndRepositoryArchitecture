@@ -132,7 +132,7 @@ class UserController {
             const { email, password } = req.body;
             const user = await this.userService.login(email, password);
             const token = await this.userService.generateToken(user);
-            res.cookie("token", token, { httpOnly: true }).json({ user, token })
+            res.cookie("token", token, { httpOnly: true }).json({ message: "cookie de sesion seteada" })
         } catch (error) {
             next(error)
         }
