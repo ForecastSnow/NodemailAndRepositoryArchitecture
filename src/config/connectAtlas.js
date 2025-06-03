@@ -7,7 +7,8 @@ export function connectDB() {
         mongoose.connect(process.env.MONGO_URI).then(() => console.log("Connected with atlasDB"))
 
     } catch (error) {
-        console.log("error to connect witch atlasDB " + error)
+        console.error("error to connect witch atlasDB " + error);
+        process.exit(1);
     }
 
 }

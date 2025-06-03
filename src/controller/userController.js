@@ -1,5 +1,6 @@
 import { userService } from "../services/userService.js";
 import { userDTO } from "../dto/userDTO.js";
+import { passwordResetService } from "../services/passwordResetService.js";
 
 class UserController {
     constructor(userService) {
@@ -156,7 +157,31 @@ class UserController {
 
         try {
 
-            
+            const { destination } = req.body;
+
+            const response = await passwordResetService.requestResetPassword(destination)
+
+            res.status(200).json(response);
+
+        } catch (error) {
+            next(error)
+        }
+
+    }
+
+    resetPassword = async (req, res, next) => {
+
+        try {
+
+            const { newPassword } = req.body;
+
+            const { token } = req.params;
+
+            const response = await passwordResetService.resetPassword(newPassword, token);
+
+            res.status(200).json(response)
+
+
         } catch (error) {
             next(error)
         }

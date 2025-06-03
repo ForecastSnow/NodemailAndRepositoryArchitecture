@@ -41,7 +41,7 @@ connectDB()
 
 app.use("/", treeRoutes);
 
-/* app.use(errorHandler); */
+app.use(errorHandler);
 
 
 app.listen(8080, () => console.log(`Server is running on http://localhost:8080`));

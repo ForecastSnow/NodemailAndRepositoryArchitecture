@@ -33,7 +33,7 @@ class UserDao extends CRUD {
                 );
             }
 
-            return response;
+            return {message: "agregado con exito"};
 
         } catch (error) {
             throw new Error
@@ -56,7 +56,7 @@ class UserDao extends CRUD {
                 );
             }
 
-            return response;
+            return {message: "carrito actualizado"};
 
         } catch (error) {
             throw new Error
@@ -70,7 +70,7 @@ class UserDao extends CRUD {
                 { _id: id, 'cart.product': product },
                 { $pull: { cart: { product: product } } }
             );
-            return response;
+            return {message: "carrito actualizado"};
 
         } catch (error) {
             throw new Error
@@ -89,7 +89,7 @@ class UserDao extends CRUD {
             const response = await this.userModel.populate(cart, {
                 path: "cart.product"
             });
-            
+
             return response;
 
         } catch (error) {
@@ -113,7 +113,11 @@ class UserDao extends CRUD {
     resetPassword = async (id, newPassword) => {
 
         try {
-            return await this.model.findByIdAndUpdate(id, newPassword, { new: true });
+
+            return await this.userModel.findByIdAndUpdate(
+                { _id: id },
+                { $set: { password: newPassword } },
+                { new: true });
         } catch (error) {
             throw Error(error);
         }

@@ -1,61 +1,60 @@
-import { Service } from "./service.js";
-import { passwordResetOrdersDao } from "../dao/mongoDB/passwordResetOrdersDao.js";
+import { userDao } from "../dao/mongoDB/userDao.js"
+import { CustomError } from "../util/customError.js";
+import { emailService } from "./emailService.js";
+import { hashPassword } from "../util/bcryptUtil.js"
 import jwt from "jsonwebtoken";
 
 
 class PasswordResetService {
 
-    constructor(passwordResetOrdersDao) {
-        this.passwordResetOrdersDao = passwordResetOrdersDao
+    constructor() {
+        this.emailService = emailService;
+        this.userDao = userDao;
     }
 
     async requestResetPassword(email) {
 
         try {
-            const userExist = await this.dao.getByEmail(email);
+            const userExist = await this.userDao.getByEmail(email);
             if (!userExist) throw new CustomError("Email indicado no encontrado", 400);
 
             const payload = {
-                _id: userExist._id,
+                userId: userExist._id,
                 first_name: userExist.first_name,
                 last_name: userExist.last_name,
                 email: userExist.mail,
             }
 
-                
+            const token = jwt.sign(payload, process.env.JWT_KEY, { expiresIn: "1h" });
+
+            await emailService.resetPasswordEmail(email, token);
+
+            return {
+                message: "Exito al enviar la solicitud de reinicio de contraseña"
+            }
+
         } catch (error) {
             throw error
         }
 
     }
 
-    async tokenResetPassword() {
+    async resetPassword(newPassword, token) {
 
 
         try {
 
-            return jwt.sign(payload, process.env.JWT_KEY, { expiresIn: "1h" });
+            const data = jwt.verify(token, process.env.JWT_KEY);
+
+            const hashedPassword = hashPassword(newPassword);
+
+            await this.userDao.resetPassword(data.userId, hashedPassword);
+
+            return {
+                message: "contraseña actualizada con exito"
+            };
         } catch (error) {
-            throw error
-        }
-
-
-
-
-    }
-
-    async resetPassword(id, newPassword, token) {
-
-
-
-        try {
-
-
-            const response = await this.dao.resetPassword(id, newPassword);
-
-            return response;
-        } catch (error) {
-            throw error
+            throw new CustomError("error al buscar en la base de datos" + error, 404);
         }
 
 
@@ -64,4 +63,4 @@ class PasswordResetService {
 }
 
 
-export const passwordResetService = new PasswordResetService(passwordResetOrdersDao);
+export const passwordResetService = new PasswordResetService();

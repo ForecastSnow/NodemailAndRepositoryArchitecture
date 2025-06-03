@@ -41,10 +41,7 @@ class OrderService extends Service {
                 outStock: outStock
             }
 
-            console.log(data)
-
             return await this.dao.create(data);
-            if (!response) throw new CustomError("no se ah podido crear el elemento", 404);
         } catch (error) {
             throw error;
         }
